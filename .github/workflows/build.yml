@@ -1,0 +1,29 @@
+name: Build TimeControl
+
+on:
+  # Позволяет запускать этот процесс вручную со страницы Actions
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # 1. Клонирует ваш репозиторий, чтобы у сервера был доступ к коду
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Устанавливает компилятор C++ (MSVC) и утилиту MSBuild
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    # 3. Запускает команду сборки
+    - name: Build the application
+      run: msbuild "TimeControl.sln" /p:Configuration=Release /p:Platform=x64
+
+    # 4. Загружает скомпилированный .exe файл как артефакт
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: TimeControl-executable
+        path: x64/Release/Time Control.exe
